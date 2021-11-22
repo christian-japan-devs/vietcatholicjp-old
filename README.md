@@ -43,10 +43,21 @@ docker-compose down -v
 ## Frontend setting
 ### Run Yarn install
 ```
+yarn install
 ```
 
+### Add new package
+```
+yarn add package-name
+```
 
-## WORKING WITH GIT
+### Getting Started
+Run the development server:
+```
+yarn dev
+```
+
+## Working with Git
 
 Before creating a new branch, pull the changes from upstream. Your master needs to be up to date.
 ```
