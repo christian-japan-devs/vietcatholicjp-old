@@ -1,6 +1,6 @@
 export interface PastoralLetter {
     id: string,
-    date: Date,
+    date: Date | null,
     subject: string,
     author: string,
     content: string,

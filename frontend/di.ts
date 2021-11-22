@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { container } from 'tsyringe'
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import fetch from 'cross-fetch'

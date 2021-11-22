@@ -14,6 +14,16 @@ type State = {
 }
 
 export class LatestPastoralLetterCard extends React.Component<Prop, State> {
+  state: Readonly<State> = {
+    entry: {
+      date: null,
+      id: '',
+      author: '',
+      content: '',
+      subject: '',
+    }
+  }
+
   async componentDidMount () {
     this.setState({
       entry: await this.props.repository.latestEntry(this.props.locale)
@@ -22,10 +32,10 @@ export class LatestPastoralLetterCard extends React.Component<Prop, State> {
 
   render () {
     return <Card>
-      <Typography variant={ 'h1' }>${ this.state.entry?.subject }</Typography>
-      <Typography variant={'h3'}>${this.state.entry?.date}</Typography>
-      <Typography variant={'h3'}>${this.state.entry?.author}</Typography>
-      <Typography variant={'body1'}>${this.state.entry?.content}</Typography>
+      <Typography variant={ 'h2' }>{ this.state.entry?.subject }</Typography>
+      <Typography variant={ 'h4' }>{ this.state.entry?.date?.toISOString() }</Typography>
+      <Typography variant={ 'h4' }>{ this.state.entry?.author }</Typography>
+      <Typography variant={ 'body1' }>{ this.state.entry?.content }</Typography>
     </Card>
   }
 }
