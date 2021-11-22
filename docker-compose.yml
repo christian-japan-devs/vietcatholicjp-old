@@ -1,0 +1,33 @@
+version: '3.8'
+
+networks:
+  vietcatholicjp-network:
+    name: vietcatholicjp-network
+    driver: bridge
+
+services:
+  vietcatholic-backend:
+    build: ./backend
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/backend/:/usr/src/app/
+    env_file:
+      - ./backend/.env.dev
+    depends_on:
+      - vietcatholic-db
+    networks:
+      - vietcatholicjp-network
+  vietcatholic-db:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=vietcatochan
+      - POSTGRES_PASSWORD=vietcatochan2021
+      - POSTGRES_DB=vietcatholicdb
+    networks:
+      - vietcatholicjp-network
+volumes:
+  postgres_data:

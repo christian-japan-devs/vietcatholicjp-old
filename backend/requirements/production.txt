@@ -1,0 +1,5 @@
+# PRODUCTION ENVIRONMENT REQUIREMENTS
+# =====================================
+
+# Include the base requirements
+-r base.txt
