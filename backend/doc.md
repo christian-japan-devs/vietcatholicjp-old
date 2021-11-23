@@ -17,6 +17,7 @@ Instead, you can run them manually, after the containers spin up, like so:
 ```
 $ docker-compose exec vietcatholic-backend python manage.py flush --no-input
 $ docker-compose exec vietcatholic-backend python manage.py migrate
+$ docker-compose exec vietcatholic-backend python manage.py createsuperuser
 ```
 
 ## For production building

@@ -1,4 +1,12 @@
 Django==3.2.9
 djangorestframework==3.12.3
-psycopg2-binary==2.9.2
-gunicorn==20.1.0
+django-rest-auth==0.9.5
+django-restful-admin==1.1.3
+django-allauth==0.44.0
+django-smart-selects==1.5.9
+django-admin-list-filter-dropdown==1.0.3
+django-admin-autocomplete-filter==0.7.1
+oauthlib==3.0.1
+requests==2.22.0
+requests-oauthlib==1.2.0
+Pillow>=8.0

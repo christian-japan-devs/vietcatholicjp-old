@@ -17,7 +17,11 @@ RUN pip install --upgrade pip
 COPY ./requirements/base.txt ./requirements/base.txt
 COPY ./requirements/development.txt ./requirements/development.txt
 
+RUN python3 -m pip install --upgrade pip
+RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
+RUN apk add --no-cache jpeg-dev zlib-dev libffi-dev
 RUN pip install -r ./requirements/development.txt --no-cache-dir
+RUN apk del .tmp
 
 # copy entrypoint.sh
 COPY ./entrypoint.sh .
