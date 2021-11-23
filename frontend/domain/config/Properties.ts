@@ -1,12 +1,12 @@
 import { singleton } from "tsyringe";
 
 export interface Properties {
-    cmsEnpoint (): string,
+    cmsEndpoint (): string,
     cmsApiKey (): string,
 }
 
 @singleton()
-export class HardcodedProperties {
+export class SimplePropertiesImpl implements Properties {
     cmsEndpoint (): string {
         return 'https://graphql.contentful.com/content/v1/spaces/cc0hz5irnide/environments/master'
     }

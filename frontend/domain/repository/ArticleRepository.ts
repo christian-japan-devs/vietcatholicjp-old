@@ -2,7 +2,7 @@ import { Article } from '../models/Article'
 import { ApolloClient, gql } from '@apollo/client'
 import { Locale } from '../models/Locale'
 import { inject, singleton } from 'tsyringe'
-import { AppProfile } from '../../spec/domain/config/AppProfile'
+import { AppProfile } from '../config/AppProfile'
 
 export interface ArticleRepository {
   /**

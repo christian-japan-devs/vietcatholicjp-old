@@ -4,12 +4,12 @@ import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import fetch from 'cross-fetch'
 import { setContext } from '@apollo/client/link/context'
 import { ApolloArticleRepository } from './domain/repository/ArticleRepository'
-import { HardcodedProperties } from './spec/domain/config/Properties'
-import { EnvVarProfile } from './spec/domain/config/AppProfile'
 import { ApolloDailyReadingRepository } from './domain/repository/DailyReadingRepository'
 import { ApolloPastoralLetterRepository } from './domain/repository/PastoralLetterRepository'
+import { SimplePropertiesImpl } from './domain/config/Properties'
+import { EnvVarProfile } from './domain/config/AppProfile'
 
-const properties = container.resolve(HardcodedProperties)
+const properties = container.resolve(SimplePropertiesImpl)
 const authLink = setContext((_, {headers}) => {
   const token = properties.cmsApiKey()
   return {
