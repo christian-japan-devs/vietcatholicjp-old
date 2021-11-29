@@ -2,7 +2,7 @@ import { PastoralLetter } from '../models/PastoralLetter'
 import { ApolloClient, gql } from '@apollo/client'
 import { Locale } from '../models/Locale'
 import { inject, singleton } from 'tsyringe'
-import { AppProfile } from '../../spec/domain/config/AppProfile'
+import { AppProfile } from '../config/AppProfile'
 
 export interface PastoralLetterRepository {
   latestEntry (locale: Locale): Promise<PastoralLetter | null>
