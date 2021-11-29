@@ -36,10 +36,17 @@ seat_status_choice = (
 )
 
 seat_choice = (
-    (SEAT_T_A, _('Type A')),
-    (SEAT_T_B, _('Type B')),
-    (SEAT_T_C, _('Type C')),
-    (SEAT_T_P, _('Priority'))
+    (SEAT_T_A, _('A')),
+    (SEAT_T_B, _('B')),
+    (SEAT_T_C, _('C')),
+    (SEAT_T_P, _('P'))
+)
+
+class_choices = (
+    (CLASS_A, 'A'),
+    (CLASS_B, 'B'),
+    (CLASS_C, 'C'),
+    (CLASS_P, 'P'),
 )
 
 week_day_choice = (

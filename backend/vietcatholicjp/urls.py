@@ -15,19 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from rest_framework.authtoken import views
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('rest-auth/', include('rest_auth.urls')),
-    path('rest-auth/registration/', include('rest_auth.registration.urls')),
-    path('api-auth/', include('rest_framework.urls')),
-    path('accounts/', include('allauth.urls')),
-    path('api-token-auth', views.obtain_auth_token, name='api-token-auth'),
-    path('chaining/', include('smart_selects.urls')),
-    path('api/', include('register.urls'))
+    path('api/register/', include('register.urls')),
+    path('api/auth/', include('accounts.urls'))
 ]
 
 if bool(settings.DEBUG):

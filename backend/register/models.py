@@ -6,7 +6,7 @@ from PIL import Image
 from smart_selects.db_fields import ChainedForeignKey
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
+from accounts.models import MyUser
 
 from .constant_choice import *
 from utils.constants import *
@@ -78,51 +78,6 @@ class District(models.Model):
         verbose_name = _("District")
         verbose_name_plural = _("Districts")
 
-# User Profile
-class UserProfile(models.Model):
-    profile_user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_first_name = models.CharField(_('Họ'), default='', max_length=30, help_text=_('Họ'))
-    profile_last_name = models.CharField(_('Tên'), default='', max_length=30, help_text=_('Tên'))
-    profile_full_name = models.CharField(_('Họ Tên'), default='', max_length=30, help_text=_('Họ tên đầy đủ'))
-    profile_image = models.ImageField(_('Hình đại diện'), default='', blank=True, null=True,
-                                        upload_to='media/profile_pics', help_text=_('Không bắt buộc'))
-    profile_address = models.CharField(_('Địa chỉ'), default='', max_length=300, help_text=_('Xin nhập địa chỉ hiện tại của bạn'))
-    profile_age = models.SmallIntegerField(_('Tuổi'), default=0, help_text=_('Xin nhập độ tuổi của bạn'))
-    profile_phone_number = models.CharField(_('Số điện thoại'), default='', blank=True, max_length=12,
-                                            help_text=_('Xin nhập số điện thoại để liên lạc khi cần'))
-    profile_language = models.CharField(_('Ngôn ngữ'), max_length=15, choices=language_choice,
-                                        default="vi", help_text=_('Ngôn ngữ sử dụng trên trang web'))
-    profile_access_num = models.IntegerField(_('Số lần truy cập'), default=0, help_text=_('Số lần truy cập trang web'))
-    profile_health_status = models.CharField(_('Tình trạng sức khoẻ'), max_length=15, choices=health_choice,
-                                                default="GOOD", help_text=_('Tình trạng sức khoẻ'))
-    profile_last_check_tempture = models.SmallIntegerField(_('Nhiệt độ cơ thể'), default=36,
-                                                        help_text=_('Nhiệt độ cơ thể lần kiểm tra gần nhất'))
-    profile_last_check_tempture_time = models.DateField(_('Kiểm tra ngày'), default=timezone.now, help_text=_('Ngày kiểm tra nhiệt độ'))
-    profile_last_update_time = models.DateField(_('Lần cuối truy cập'), default=timezone.now, help_text=_('Lần cuối truy cập'))
-    profile_account_confimred = models.BooleanField(_('Xác minh'), help_text=_('Tình trạng xác minh'), default=False)
-    profile_code = models.CharField(_('Mã xác nhận'), default='', blank=True, max_length=20, help_text=_('Mã xác nhận tài khoản'))
-    profile_registered_count = models.SmallIntegerField(default=1, blank=True, null=True)
-    profile_absented_count = models.SmallIntegerField(default=0, blank=True, null=True)
-    profile_presented_count = models.SmallIntegerField(default=1, blank=True, null=True)
-    profile_group = models.CharField(_('Nhóm'), max_length=15, choices=health_choice, default="A", help_text=_('Nhóm thời gian'))
-
-    class Meta:
-        unique_together = (
-            'profile_user', 'profile_full_name', 'profile_address')
-        ordering = ('profile_user__username', 'profile_user__email',)
-
-    def __str__(self):
-        return f'{self.profile_user.username} : {self.profile_full_name} : {self.profile_user.email}'
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if (self.profile_image):
-            img = Image.open(self.profile_image.path)
-            if img.height > 300 or img.width > 300:
-                output_size = (300, 300)
-                img.thumbnail(output_size)
-                img.save(self.profile_image.path)
-
 
 class Church(models.Model):
 
@@ -190,9 +145,9 @@ class Church(models.Model):
         'Churchs latitue acorrding Google'), default=0.0, blank=True, null=True)
     church_geo_hash = models.CharField(verbose_name=_(
         'geo_hash'), max_length=30, default='', blank=True)
-    church_register_user = models.ForeignKey(User, verbose_name=_(
+    church_register_user = models.ForeignKey(MyUser, verbose_name=_(
         'Created User'), on_delete=models.CASCADE, default=None, blank=True, null=True)
-    church_update_user = models.ForeignKey(User, verbose_name=_(
+    church_update_user = models.ForeignKey(MyUser, verbose_name=_(
         'Last updated User'), on_delete=models.CASCADE, default=None, blank=True, null=True, related_name='church_update_user')
     church_update_date = models.DateTimeField(verbose_name=_(
         'Last updated date'), help_text=_('Last updated date'), default=timezone.now)
@@ -252,7 +207,7 @@ class ConfessionSchedule(models.Model):
         _('Kết thúc'), help_text=_('thời gian kết thúc'))
     con_language = models.CharField(_('Ngôn ngữ'), help_text=_(
         'Ngôn ngữ'), max_length=15, choices=language_choice)
-    con_father = models.ForeignKey(User, verbose_name=_(
+    con_father = models.ForeignKey(MyUser, verbose_name=_(
         'Cha giải tội'), on_delete=models.CASCADE, default=None, blank=True, null=True, related_name='con_father')
     con_update_date = models.DateTimeField(
         _('Last updated date'), default=timezone.now)
@@ -284,9 +239,9 @@ class MassTime(models.Model):
         _('Tuần Phụng vụ'), help_text=_('Tuần phụng vụ'), max_length=4, default="0")
     mass_time_church = models.ForeignKey(
         Church, on_delete=models.CASCADE, help_text=_('Tên nhà thờ'))
-    mass_time_created_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    mass_time_created_user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     mass_time_updated_user = models.ForeignKey(
-        User, on_delete=models.CASCADE, default=None, blank=True, null=True, related_name='mass_time_updated_user')
+        MyUser, on_delete=models.CASCADE, default=None, blank=True, null=True, related_name='mass_time_updated_user')
     mass_time_last_updated_date = models.DateTimeField(
         _('Ngày cập nhật'), help_text=_('Lần cuối cập nhật'), default=timezone.now)
     mass_time_status = models.BooleanField(_('Status'), help_text=_(
@@ -312,12 +267,12 @@ class Mass(models.Model):
         'Ngôn ngữ'), max_length=15, choices=language_choice)
     mass_date_ordinary = models.CharField(
         _('Tuần phụng vụ'), help_text=_('Tuần phụng vụ'), max_length=3)
-    mass_father_celebrant = models.ForeignKey(User, verbose_name=_('Cha chủ tế'), help_text=_(
+    mass_father_celebrant = models.ForeignKey(MyUser, verbose_name=_('Cha chủ tế'), help_text=_(
         'Cha chủ tế'), on_delete=models.CASCADE, blank=True, null=True, related_name="mass_father")
     mass_church = models.ForeignKey(Church, on_delete=models.CASCADE, help_text=_(
         'chọn Nhà thờ'), blank=True, null=True)
     mass_slots = models.SmallIntegerField(
-        _('Số chỗ'), help_text=_('Số chỗ'), default=50)
+        _('Số chỗ'), help_text=_('Số chỗ'), default=100)
     mass_slots_registered = models.SmallIntegerField(_('Số đăng ký'), help_text=_(
         'Số người đăng ký'), default=0, blank=True, null=True)
     mass_slots_attended = models.SmallIntegerField(_('Số tham dự'), help_text=_(
@@ -332,13 +287,13 @@ class Mass(models.Model):
         'Hình ảnh minh hoạ'), null=True, blank=True, upload_to='mass_images')
     mass_last_updated_date = models.DateTimeField(_('Ngày cập nhật'), help_text=_(
         'Lần cuối cập nhật'), default=timezone.now, blank=True, null=True)
-    mass_created_user = models.ForeignKey(User, on_delete=models.CASCADE, help_text=_(
+    mass_created_user = models.ForeignKey(MyUser, on_delete=models.CASCADE, help_text=_(
         'Người cuối cập nhật'), blank=True, null=True, related_name="created_user")
     mass_require_flag = models.BooleanField(_('Yêu cầu đăng ký '), help_text=_(
-        'Yêu cầu đăng'), default=True, blank=True, null=True)
+        'Yêu cầu đăng  ký '), default=True, blank=True, null=True)
     mass_active = models.BooleanField(_('Tình trạng'), help_text=_(
         'Cho phép đăng ký'), default=True, blank=True, null=True)
-    mass_waiting_flag = models.BooleanField(_('Cho phép đăng ký '), help_text=_(
+    mass_waiting_flag = models.BooleanField(_('Cho phép đăng ký đợi'), help_text=_(
         'Cho phép đăng ký đợi'), default=False, blank=True, null=True)
 
     def __str__(self):
@@ -379,23 +334,23 @@ class Seat(models.Model):
         return f'{self.seat_mass_schedule.mass_church.church_name}:{self.seat_mass_schedule.mass_week_day}:{self.seat_mass_schedule.mass_time}'
 
 class Registration(models.Model):
-    registration_date = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    registration_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    registration_user_name = models.CharField(default='', null=True, blank=True, max_length=30)
-    registration_user_age = models.SmallIntegerField(default=0, null=True, blank=True)
-    registration_mass = models.ForeignKey(Mass, on_delete=models.CASCADE)
-    registration_confirm_code = models.CharField(max_length=25, default='', blank=True)
-    registration_code = models.CharField(max_length=200, default='', null=True, blank=True)
-    registration_seat = models.ForeignKey(Seat, on_delete=models.SET_NULL, null=True, blank=True)
-    registration_total_seats = models.SmallIntegerField(default=1, null=True, blank=True)
-    registration_status = models.CharField(max_length=3, choices=status_choice, default=WAITING, null=True, blank=True)
-    registration_approve_status = models.CharField(max_length=3, choices=status_choice, default=APPROVED, 
+    registration_date = models.DateTimeField(_('Ngày đăng ký'), default=timezone.now, null=True, blank=True)
+    registration_user = models.ForeignKey(MyUser, on_delete=models.CASCADE, help_text=_('Acc người đăng ký'))
+    registration_user_name = models.CharField(_('Tên người đăng ký'), default='', null=True, blank=True, max_length=30)
+    registration_user_age = models.SmallIntegerField(_('Tuổi'), default=0, null=True, blank=True)
+    registration_mass = models.ForeignKey(Mass, on_delete=models.CASCADE, help_text=_('Thánh Lễ'))
+    registration_confirm_code = models.CharField(_('Mã xác nhận đăng ký'), max_length=25, default='', blank=True)
+    registration_code = models.CharField(_('Mã đăng ký'),max_length=200, default='', null=True, blank=True)
+    registration_seat = models.ForeignKey(Seat, on_delete=models.SET_NULL, null=True, blank=True, help_text=_('Số ghế'))
+    registration_total_seats = models.SmallIntegerField(_('Tổng số ghế'), default=1, null=True, blank=True)
+    registration_status = models.CharField(_('Tình trạng đăng ký'), max_length=3, choices=status_choice, default=WAITING, null=True, blank=True)
+    registration_approve_status = models.CharField(_('Tình trạng duyệt'), max_length=3, choices=status_choice, default=APPROVED, 
                                                     null=True, blank=True, help_text=_('Trạng thái được cập nhập sau khi đăng ký'))
-    registration_last_update = models.DateTimeField(default=timezone.now, null=True, blank=True)
-    registration_confirm_status = models.CharField(max_length=3, choices=cf_status_choice, default=NOTCONFIRM, null=True, blank=True)
-    registration_last_updated_user = models.ForeignKey(User, on_delete=models.CASCADE, default=None, blank=True, null=True, 
-                                                        help_text=_('Người cuối cập nhật'), related_name='registration_last_updated_user')
-    registration_last_checkin = models.DateTimeField(null=True, blank=True, help_text=_('Thời gian checkin'))
+    registration_confirm_status = models.CharField(_('Tình trạng xác nhận'), max_length=3, choices=cf_status_choice, default=NOTCONFIRM, null=True, blank=True)
+    registration_last_update = models.DateTimeField(_('Cập nhật'), default=timezone.now, null=True, blank=True)
+    registration_checkin = models.DateTimeField(_('Thời gian checkin'), null=True, blank=True, help_text=_('Thời gian checkin'))
+    registration_last_updated_user = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=None, blank=True, null=True, 
+                                                        help_text=_('Người cuối duyệt'), related_name='registration_last_updated_user')
     registration_last_update_time = models.DateTimeField(default=timezone.now, null=True, blank=True, help_text=_('Thời gian cập nhập lần cuối'))
 
     class Meta:

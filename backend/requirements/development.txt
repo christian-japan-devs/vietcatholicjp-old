@@ -3,4 +3,4 @@
 
 # Include the base requirements
 -r base.txt
-psycopg2==2.8.6
+#psycopg2==2.8.6

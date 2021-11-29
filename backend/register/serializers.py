@@ -1,7 +1,7 @@
 from django.db import models
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from django.contrib.auth.models import User
+from accounts.models import MyUser
 from .models import ( Mass, MassTime, Registration, 
                                 Country, Province, District, Church, MassSchedule, ConfessionSchedule)
 
@@ -149,19 +149,18 @@ class MassTimeSerializer(serializers.ModelSerializer):
 
 
 class AccountSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(
-        validators=[UniqueValidator(queryset=User.objects.all())])
+    
     email = serializers.EmailField(
-        validators=[UniqueValidator(queryset=User.objects.all())])
+        validators=[UniqueValidator(queryset=MyUser.objects.all())])
 
     class Meta:
-        model = User
+        model = MyUser
         fields = ('username', 'password', 'email')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         password = validated_data.pop('password')
-        user = User(**validated_data)
+        user = MyUser(**validated_data)
         user.set_password(password)
         user.save()
         return user
