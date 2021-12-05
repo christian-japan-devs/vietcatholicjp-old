@@ -3,8 +3,8 @@ import { ApolloClient, gql } from '@apollo/client'
 import { Locale } from '../models/Locale'
 import { ReadingArticle } from '../models/ReadingArticle'
 import { render } from '../util/RichTextHtmlRenderer'
-import { AppProfile } from '../../spec/domain/config/AppProfile'
 import { inject, singleton } from 'tsyringe'
+import { AppProfile } from '../config/AppProfile'
 
 export interface DailyReadingRepository {
   /**

@@ -1,10 +1,11 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import { initInjector } from '../di'
+import 'tailwindcss/tailwind.css';
+import type { AppProps } from 'next/app';
+import { initInjector } from '../di';
+import { appWithTranslation } from 'next-i18next';
 
 function MyApp({ Component, pageProps }: AppProps) {
   initInjector()
   return <Component {...pageProps} />
 }
 
-export default MyApp
+export default appWithTranslation(MyApp)

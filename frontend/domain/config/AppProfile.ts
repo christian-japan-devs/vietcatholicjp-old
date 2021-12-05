@@ -11,7 +11,6 @@ export interface AppProfile {
 export class EnvVarProfile implements AppProfile{
     private readonly productionFalg = (process.env.NODE_ENV === 'production')
 
-
     isProduction (): boolean {
         return this.productionFalg
     }
