@@ -76,7 +76,7 @@ class ReMassListViewSet(viewsets.ModelViewSet):
 
     # /api/getMass
     def getlist(self, request):
-        listmasses = Mass.objects.all().order_by(
+        listmasses = Mass.objects.filter(mass_active=True).order_by(
             '-mass_date', '-mass_last_updated_date')
         serializer = ReMassSerializer(listmasses, many=True)
         return Response(serializer.data)

@@ -7,13 +7,15 @@ networks:
 
 services:
   vietcatholic-backend:
+    restart: always
     build: 
       context: ./backend
       dockerfile: Dockerfile.prod
-    command: gunicorn vietcatholicjp.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn vietcatholicjp.wsgi:application --bind 0.0.0.0:8000 --reload
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
+      - ./backend/:/usr/src/app/
     expose:
       - 8000
     env_file:

@@ -3,7 +3,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import AuthenticationFailed
-from authemail import wrapper
 
 from django.contrib.auth import authenticate, get_user_model
 from django.utils.translation import gettext as _
@@ -11,7 +10,7 @@ from accounts.models import MyUser
 from vietcatholicjp.settings import SECRET_KEY, AUTH_EMAIL_VERIFICATION
 import jwt, datetime
 from accounts.serializers import UserSerializer, MyUserChangeSerializer
-
+from datetime import date
 from accounts.models import SignupCode, EmailChangeCode, PasswordResetCode
 from accounts.models import send_multi_format_email
 from accounts.serializers import SignupSerializer, LoginSerializer
@@ -176,7 +175,7 @@ class Login(APIView):
                             }
                             token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
                             response = Response()
-                            response.set_cookie(key='jwt', value=token, httponly=True)
+                            response.set_cookie(key='jwt', value=token, max_age=60 * 60 * 24, httponly=True)
                             response.data = {
                                 'jwt':token
                             }
@@ -200,8 +199,7 @@ class Login(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 class Logout(APIView):
-    permission_classes = (IsAuthenticated,)
-
+    permission_classes = (AllowAny,)
     def get(self, request, format=None):
         """
         Remove cookie.
@@ -209,8 +207,9 @@ class Logout(APIView):
         response = Response()
         response.delete_cookie('jwt')
         content = {'success': _('User logged out.')}
-        return Response(content, status=status.HTTP_200_OK)
-
+        response.data = content
+        response.status = status.HTTP_200_OK
+        return response
 
 class PasswordReset(APIView):
     permission_classes = (AllowAny,)
