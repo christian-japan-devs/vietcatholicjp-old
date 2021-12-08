@@ -5,6 +5,17 @@ import { container } from "tsyringe";
 import { Locale } from "../../domain/models/Locale";
 import Layout from "../../components/Layout";
 
+<<<<<<< HEAD
+// TODO: This page is just for demonstration's sake, it will be deleted soon.
+export default class Construction extends React.Component<any, any> {
+  render () {
+    return <LatestPastoralLetterCard
+      repository={ container.resolve('PastoralLetterRepository') }
+      locale={ Locale.VIETNAMESE }
+    />
+  }
+}
+=======
 
 const Construction: NextPage = () => {
   const [notiOpen, setNotiOpen] = useState(false);
@@ -27,3 +38,4 @@ const Construction: NextPage = () => {
 }
 
 export default Construction
+>>>>>>> main

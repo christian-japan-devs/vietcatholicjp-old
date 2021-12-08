@@ -1,4 +1,4 @@
 export enum Locale {
-    VIETNAMESE = 'vi',
-    JAPANESE = 'jp',
+  VIETNAMESE = 'vi',
+  JAPANESE = 'jp',
 }

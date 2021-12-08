@@ -17,4 +17,6 @@ ENV/
 env.bak/
 venv.bak/
 
+# IDE
+.idea/
 .DS_Store

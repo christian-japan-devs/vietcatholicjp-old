@@ -4,12 +4,19 @@ import { Locale } from '../models/Locale'
 import { inject, singleton } from 'tsyringe'
 import { AppProfile } from '../config/AppProfile'
 import { render } from '../util/RichTextHtmlRenderer'
+import { Tag } from '../models/Tag'
 
 export interface ArticleRepository {
   /**
    * Get the latest entries, only title, thumbnailUrl, date and author and brief are populated.
    */
   latestEntries (count: number, locale: Locale): Promise<Article[]>
+
+  /**
+   * Get the latest entries, filters by tags.
+   * Implementation note: for multiple tags, the fetching policy MUST be OR not AND.
+   */
+  latestEntriesByTags (count: number, locale: Locale, tags: Tag[]): Promise<Article[]>
 
   /**
    * Get the full article given the post's ID.
@@ -100,6 +107,29 @@ export class ApolloArticleRepository implements ArticleRepository {
         "limit": count,
         "preview": !this.appProfile.isProduction(),
         "locale": locale,
+      }
+    })).data.articleCollection.items
+
+    return entryItems.map(ApolloArticleRepository.makeArticle)
+  }
+
+  async latestEntriesByTags (count: number, locale: Locale, tags: Tag[]): Promise<Article[]> {
+    const entryItems = (await this.apolloClient.query({
+      query: gql`
+        ${ ApolloArticleRepository.FRAGMENT_BRIEF_ARTICLE }
+        query latestArticles($limit: Int, $preview: Boolean, $locale: String, $tags: [String]) {
+          articleCollection(limit: $limit, preview: $preview, locale: $locale, order: date_DESC, where: {contentfulMetadata: {tags: {id_contains_some: $tags}}}) {
+            items {
+              ...articleBriefArticle
+            }
+          }
+        }
+      `,
+      variables: {
+        limit: count,
+        preview: !this.appProfile.isProduction(),
+        locale: locale,
+        tags: tags,
       }
     })).data.articleCollection.items
 
