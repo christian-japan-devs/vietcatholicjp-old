@@ -1,0 +1,15 @@
+{
+    "common":"common",
+    "auth":"auth",
+    "welcome-back": "Welcome back",
+    "email-address": "Email address",
+    "enter-email": "Enter your email",
+    "password": "Password",
+    "enter-password": "Enter your password",
+    "first-name": "Your Holy Name",
+    "last-name": "Your full name",
+    "login": "Sign in",
+    "signup": "Sign up",
+    "change-language": "Change Language",
+    "go-back": "Go Back"
+}
