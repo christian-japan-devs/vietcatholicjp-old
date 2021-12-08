@@ -21,9 +21,13 @@ const Register: NextPage = () => {
         );
 
         const content = await response.json();
-
-        setMessage(`Hi ${content.first_name}`);
-        setAuth(true);
+        if(response.ok){
+          setMessage(`Hi ${content.first_name}`);
+          setAuth(true);
+        }else{
+          router.push("/auth/login");
+          setAuth(false);
+        }
       } catch (e) {
         router.push("/auth/login");
         setAuth(false);
@@ -32,7 +36,7 @@ const Register: NextPage = () => {
   });
 
   return (
-    <Layout auth={false} notification={{open:notiOpen, message:message,setOpen:setNotiOpen}}>
+    <Layout auth={auth} notification={{open:notiOpen, message:message,setOpen:setNotiOpen}}>
       <div>{message}</div>
     </Layout>
   );
