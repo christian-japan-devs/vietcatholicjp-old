@@ -1,0 +1,15 @@
+{
+    "common":"common",
+    "auth":"auth",
+    "welcome-back": "Xin chào bạn",
+    "email-address": "Email",
+    "enter-email": "Nhập địa chỉ email",
+    "password": "Mật khẩu",
+    "enter-password": "Nhập mật khẩu",
+    "first-name": "Nhập Tên Thánh",
+    "last-name": "Họ tên",
+    "login": "Đăng nhập",
+    "signup": "Đăng ký",
+    "change-language": "Đổi ngon ngữ",
+    "go-back": "Quay lại"
+}
