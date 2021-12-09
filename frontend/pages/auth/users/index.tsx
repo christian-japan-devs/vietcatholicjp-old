@@ -12,6 +12,9 @@ const Index = () => {
     "Xin vui lòng đăng nhập bằng tài khoản bạn đã đăng ký."
   );
 
+  const [notiOpen, setNotiOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const router = useRouter();
 
   const submit = async (e: SyntheticEvent) => {
@@ -38,7 +41,8 @@ const Index = () => {
   };
 
   return (
-    <Layout auth={false} notification={{open:false}}>
+    <Layout auth={isAuthenticated}
+    notification={{ open: notiOpen, message: message, setOpen: setNotiOpen }}>
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
         <div
           className="
