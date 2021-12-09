@@ -10,10 +10,6 @@ module.exports = {
           defaultLocale: 'vn',
         },
         {
-          domain: 'localhost:3000/jp',
-          defaultLocale: 'jp',
-        },
-        {
           domain: 'localhost:3000/en',
           defaultLocale: 'en',
           // an optional http field can also be used to test
