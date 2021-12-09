@@ -183,9 +183,9 @@ const Index = () => {
   );
 };
 
-export const getStaticProps = async ({ locale }) => ({
+export const getStaticProps = async ({ locale }:{ locale:any }) => ({
     props: {
-      ...await serverSideTranslations(locale, ['auth']),
+      ...await serverSideTranslations(locale!, ['auth']),
     },
 });
   
