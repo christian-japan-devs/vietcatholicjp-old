@@ -22,7 +22,7 @@ const Register: NextPage = () => {
 
         const content = await response.json();
         if(response.ok){
-          setMessage(`Hi ${content.first_name}`);
+          setMessage(`Hi ${content.first_name} ${content.profile_address}`);
           setAuth(true);
         }else{
           router.push("/auth/login");
