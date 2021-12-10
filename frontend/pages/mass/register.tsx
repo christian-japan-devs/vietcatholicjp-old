@@ -16,7 +16,7 @@ const Register: NextPage = () => {
         const response = await fetch(
           "http://localhost:8000/api/auth/users/me",
           {
-            credentials: "same-origin"
+            credentials: "include",
           }
         );
 
