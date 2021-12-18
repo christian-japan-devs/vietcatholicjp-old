@@ -105,35 +105,6 @@ export class ApolloDailyReadingRepository implements DailyReadingRepository {
     this.appProfile = appProfile
   }
 
-  async latestEntry (locale: Locale): Promise<DailyReading | null> {
-    const entries = await this.fetchEntries(0, 1, locale, !this.appProfile.isProduction())
-    return entries.length > 0 ? entries[0] : null
-  }
-
-  async entryByDate (date: Date, locale: Locale): Promise<DailyReading | null> {
-    const entryItems = (await this.apolloClient.query({
-      query: gql`
-        ${ ApolloDailyReadingRepository.DAILY_READING_FRAGMENT }
-        query fetchDailyReading($locale: String, $preview: Boolean, $date: DateTime) {
-          dailyReadingCollection(preview: $preview, locale: $locale, limit: 1, where: {date: $date}) {
-            items {
-              ...dailyReadingContent
-            }
-          }
-        }
-      `,
-      variables: {
-        locale: locale,
-        preview: !this.appProfile.isProduction(),
-        date: date
-      }
-    })).data.dailyReadingCollection.items
-
-    return entryItems.length > 0 ? ApolloDailyReadingRepository.makeDailyReading(entryItems[0]) : null
-  }
-
-  /********************************************************************************************************************/
-
   /**
    * @param dailyReadingItem
    * @return DailyReading
@@ -168,6 +139,33 @@ export class ApolloDailyReadingRepository implements DailyReadingRepository {
       videoUrl: readingArticle.videoUrl,
       audioUrl: readingArticle.audioUrl,
     } as ReadingArticle
+  }
+
+  async latestEntry (locale: Locale): Promise<DailyReading | null> {
+    const entries = await this.fetchEntries(0, 1, locale, !this.appProfile.isProduction())
+    return entries.length > 0 ? entries[0] : null
+  }
+
+  async entryByDate (date: Date, locale: Locale): Promise<DailyReading | null> {
+    const entryItems = (await this.apolloClient.query({
+      query: gql`
+        ${ ApolloDailyReadingRepository.DAILY_READING_FRAGMENT }
+        query fetchDailyReading($locale: String, $preview: Boolean, $date: DateTime) {
+          dailyReadingCollection(preview: $preview, locale: $locale, limit: 1, where: {date: $date}) {
+            items {
+              ...dailyReadingContent
+            }
+          }
+        }
+      `,
+      variables: {
+        locale: locale,
+        preview: !this.appProfile.isProduction(),
+        date: date
+      }
+    })).data.dailyReadingCollection.items
+
+    return entryItems.length > 0 ? ApolloDailyReadingRepository.makeDailyReading(entryItems[0]) : null
   }
 
   /**

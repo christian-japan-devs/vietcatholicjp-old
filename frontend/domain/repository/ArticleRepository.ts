@@ -55,6 +55,19 @@ export class ApolloArticleRepository implements ArticleRepository {
     this.appProfile = appProfile
   }
 
+  private static makeArticle (articleItem: any) {
+    return {
+      id: articleItem.sys.id,
+      title: articleItem.title,
+      thumbnailUrl: articleItem.thumbnail.url,
+      author: articleItem.author,
+      date: new Date(articleItem.date),
+      brief: articleItem.brief,
+      content: articleItem.content ? render(articleItem.content) : '',
+      tags: articleItem.contentfulMetadata.tags.map((tag: any) => tag.id)
+    } as Article
+  }
+
   async entry (id: string, locale: Locale): Promise<Article | null> {
     const article = (await this.apolloClient.query({
       query: gql`
@@ -97,20 +110,5 @@ export class ApolloArticleRepository implements ArticleRepository {
     })).data.articleCollection.items
 
     return entryItems.map(ApolloArticleRepository.makeArticle)
-  }
-
-  /********************************************************************************************************************/
-
-  private static makeArticle (articleItem: any) {
-    return {
-      id: articleItem.sys.id,
-      title: articleItem.title,
-      thumbnailUrl: articleItem.thumbnail.url,
-      author: articleItem.author,
-      date: new Date(articleItem.date),
-      brief: articleItem.brief,
-      content: articleItem.content ? render(articleItem.content) : '',
-      tags: articleItem.contentfulMetadata.tags.map((tag: any) => tag.id)
-    } as Article
   }
 }

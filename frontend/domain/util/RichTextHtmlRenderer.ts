@@ -4,7 +4,6 @@ import { Asset } from '../models/Asset'
 import { escape } from 'html-escaper';
 
 
-
 /*
  * richText object must have these fields.
  */
