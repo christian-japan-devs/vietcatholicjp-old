@@ -3,8 +3,8 @@ import { container } from 'tsyringe'
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import fetch from 'cross-fetch'
 import { setContext } from '@apollo/client/link/context'
-import { ApolloArticleRepository } from './domain/repository/ArticleRepository'
-import { ApolloDailyReadingRepository } from './domain/repository/DailyReadingRepository'
+import { ContentfulGraphqlArticleRepository } from './domain/repository/ArticleRepository'
+import { ContentfulGraphqlDailyReadingRepository } from './domain/repository/DailyReadingRepository'
 import { SimplePropertiesImpl } from './domain/config/Properties'
 import { EnvVarProfile } from './domain/config/AppProfile'
 import { ContentfulGraphqlArticleGroupRepository } from './domain/repository/ArticleGroupRepository'
@@ -29,7 +29,7 @@ export const initInjector = () => {
   })
 
   container.register('AppProfile', {useClass: EnvVarProfile})
-  container.register('ArticleRepository', {useClass: ApolloArticleRepository})
-  container.register('DailyReadingRepository', {useClass: ApolloDailyReadingRepository})
+  container.register('ArticleRepository', {useClass: ContentfulGraphqlArticleRepository})
+  container.register('DailyReadingRepository', {useClass: ContentfulGraphqlDailyReadingRepository})
   container.register('ArticleGroupRepository', {useClass: ContentfulGraphqlArticleGroupRepository})
 }

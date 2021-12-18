@@ -22,7 +22,7 @@ export interface ArticleRepository {
 }
 
 @singleton()
-export class ApolloArticleRepository implements ArticleRepository {
+export class ContentfulGraphqlArticleRepository implements ArticleRepository {
   private static readonly FRAGMENT_BRIEF_ARTICLE = gql`
     fragment articleBriefArticle on Article {
      sys {
@@ -71,7 +71,7 @@ export class ApolloArticleRepository implements ArticleRepository {
   async entry (id: string, locale: Locale): Promise<Article | null> {
     const article = (await this.apolloClient.query({
       query: gql`
-        ${ ApolloArticleRepository.FRAGMENT_BRIEF_ARTICLE }
+        ${ ContentfulGraphqlArticleRepository.FRAGMENT_BRIEF_ARTICLE }
         query article($id: String!, $preview: Boolean, $locale: String) {
           article(id: $id, preview: $preview, locale: $locale) {
            ...articleBriefArticle,
@@ -86,13 +86,13 @@ export class ApolloArticleRepository implements ArticleRepository {
       }
     })).data.article
 
-    return article === null ? null : ApolloArticleRepository.makeArticle(article)
+    return article === null ? null : ContentfulGraphqlArticleRepository.makeArticle(article)
   }
 
   async latestEntriesByTags (count: number, locale: Locale, tags: Tag[]): Promise<Article[]> {
     const entryItems = (await this.apolloClient.query({
       query: gql`
-        ${ ApolloArticleRepository.FRAGMENT_BRIEF_ARTICLE }
+        ${ ContentfulGraphqlArticleRepository.FRAGMENT_BRIEF_ARTICLE }
         query latestArticles($limit: Int, $preview: Boolean, $locale: String, $tags: [String]) {
           articleCollection(limit: $limit, preview: $preview, locale: $locale, order: date_DESC, where: {contentfulMetadata: {tags: {id_contains_some: $tags}}}) {
             items {
@@ -109,6 +109,6 @@ export class ApolloArticleRepository implements ArticleRepository {
       }
     })).data.articleCollection.items
 
-    return entryItems.map(ApolloArticleRepository.makeArticle)
+    return entryItems.map(ContentfulGraphqlArticleRepository.makeArticle)
   }
 }

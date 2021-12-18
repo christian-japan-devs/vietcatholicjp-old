@@ -1,4 +1,4 @@
-import { ApolloArticleRepository, ArticleRepository } from '../../../domain/repository/ArticleRepository'
+import { ArticleRepository } from '../../../domain/repository/ArticleRepository'
 import { container } from 'tsyringe'
 import { Locale } from '../../../domain/models/Locale'
 import { Tag } from '../../../domain/models/Tag'

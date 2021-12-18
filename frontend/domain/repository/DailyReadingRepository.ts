@@ -27,7 +27,7 @@ export interface DailyReadingRepository {
 /**********************************************************************************************************************/
 
 @singleton()
-export class ApolloDailyReadingRepository implements DailyReadingRepository {
+export class ContentfulGraphqlDailyReadingRepository implements DailyReadingRepository {
   private static readonly READING_ARTICLE_FRAGMENT = gql`
     fragment readingContent on Reading {
       sys {
@@ -55,7 +55,7 @@ export class ApolloDailyReadingRepository implements DailyReadingRepository {
     }  
   `
   private static readonly DAILY_READING_FRAGMENT = gql`
-    ${ ApolloDailyReadingRepository.READING_ARTICLE_FRAGMENT }
+    ${ ContentfulGraphqlDailyReadingRepository.READING_ARTICLE_FRAGMENT }
     fragment dailyReadingContent on DailyReading {
       sys {
         id
@@ -117,11 +117,11 @@ export class ApolloDailyReadingRepository implements DailyReadingRepository {
       lectionaryYear: dailyReadingItem.lectionaryYear,
       title: dailyReadingItem.title,
       brief: dailyReadingItem.brief,
-      firstReading: ApolloDailyReadingRepository.makeReadingArticle(dailyReadingItem.firstReading),
-      responsorialPsalm: ApolloDailyReadingRepository.makeReadingArticle(dailyReadingItem.responsorialPsalm),
-      secondReading: ApolloDailyReadingRepository.makeReadingArticle(dailyReadingItem.secondReading),
-      alleluia: ApolloDailyReadingRepository.makeReadingArticle(dailyReadingItem.alleluia),
-      gospel: ApolloDailyReadingRepository.makeReadingArticle(dailyReadingItem.gospel),
+      firstReading: ContentfulGraphqlDailyReadingRepository.makeReadingArticle(dailyReadingItem.firstReading),
+      responsorialPsalm: ContentfulGraphqlDailyReadingRepository.makeReadingArticle(dailyReadingItem.responsorialPsalm),
+      secondReading: ContentfulGraphqlDailyReadingRepository.makeReadingArticle(dailyReadingItem.secondReading),
+      alleluia: ContentfulGraphqlDailyReadingRepository.makeReadingArticle(dailyReadingItem.alleluia),
+      gospel: ContentfulGraphqlDailyReadingRepository.makeReadingArticle(dailyReadingItem.gospel),
       reflectionHtml: render(dailyReadingItem.reflection)
     } as DailyReading
   }
@@ -149,7 +149,7 @@ export class ApolloDailyReadingRepository implements DailyReadingRepository {
   async entryByDate (date: Date, locale: Locale): Promise<DailyReading | null> {
     const entryItems = (await this.apolloClient.query({
       query: gql`
-        ${ ApolloDailyReadingRepository.DAILY_READING_FRAGMENT }
+        ${ ContentfulGraphqlDailyReadingRepository.DAILY_READING_FRAGMENT }
         query fetchDailyReading($locale: String, $preview: Boolean, $date: DateTime) {
           dailyReadingCollection(preview: $preview, locale: $locale, limit: 1, where: {date: $date}) {
             items {
@@ -165,7 +165,7 @@ export class ApolloDailyReadingRepository implements DailyReadingRepository {
       }
     })).data.dailyReadingCollection.items
 
-    return entryItems.length > 0 ? ApolloDailyReadingRepository.makeDailyReading(entryItems[0]) : null
+    return entryItems.length > 0 ? ContentfulGraphqlDailyReadingRepository.makeDailyReading(entryItems[0]) : null
   }
 
   /**
@@ -179,7 +179,7 @@ export class ApolloDailyReadingRepository implements DailyReadingRepository {
   private async fetchEntries (offset: number, limit: number, locale: Locale, preview: boolean): Promise<DailyReading[]> {
     const entryItems = (await this.apolloClient.query({
       query: gql`
-          ${ ApolloDailyReadingRepository.DAILY_READING_FRAGMENT }
+          ${ ContentfulGraphqlDailyReadingRepository.DAILY_READING_FRAGMENT }
           query fetchLatestDailyReading($locale: String, $preview: Boolean, $offset: Int, $limit: Int) {
             dailyReadingCollection(preview: $preview, locale: $locale, order: date_DESC, limit: $limit, skip: $offset) {
               items {
@@ -196,6 +196,6 @@ export class ApolloDailyReadingRepository implements DailyReadingRepository {
       }
     })).data.dailyReadingCollection.items  // Contentful's DailyReading type
 
-    return entryItems.map(ApolloDailyReadingRepository.makeDailyReading)
+    return entryItems.map(ContentfulGraphqlDailyReadingRepository.makeDailyReading)
   }
 }
