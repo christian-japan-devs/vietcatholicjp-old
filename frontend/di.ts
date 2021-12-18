@@ -7,6 +7,7 @@ import { ApolloArticleRepository } from './domain/repository/ArticleRepository'
 import { ApolloDailyReadingRepository } from './domain/repository/DailyReadingRepository'
 import { SimplePropertiesImpl } from './domain/config/Properties'
 import { EnvVarProfile } from './domain/config/AppProfile'
+import { ContentfulGraphqlArticleGroupRepository } from './domain/repository/ArticleGroupRepository'
 
 const properties = container.resolve(SimplePropertiesImpl)
 const authLink = setContext((_, {headers}) => {
@@ -30,4 +31,5 @@ export const initInjector = () => {
   container.register('AppProfile', {useClass: EnvVarProfile})
   container.register('ArticleRepository', {useClass: ApolloArticleRepository})
   container.register('DailyReadingRepository', {useClass: ApolloDailyReadingRepository})
+  container.register('ArticleGroupRepository', {useClass: ContentfulGraphqlArticleGroupRepository})
 }
