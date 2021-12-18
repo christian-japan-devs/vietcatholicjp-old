@@ -10,34 +10,8 @@ describe('ApolloArticleRepository', () => {
     underTest = container.resolve('ArticleRepository')
   })
 
-  describe('latestEntries', () => {
-    it('should return the latest entries correctly', async () => {
-      const articles = await underTest.latestEntries(10, Locale.VIETNAMESE)
-      const expected = [
-        {
-          id: '71q349dybS5v2Y9ANIREb6',
-          title: 'NGỢI KHEN THIÊN CHÚA VÌ THÁNH CẢ GIUSE (Latest)',
-          thumbnailUrl: 'https://images.ctfassets.net/cc0hz5irnide/9t4jDQQwt1his5LRMkDQV/0dcc58542989e4e2b861b403f607b75f/000107506.jpg',
-          author: 'Khoi Hoang',
-          date: new Date('2021-11-15T00:00:00.000Z'),
-          brief: 'Hoang Khoi Hoang Khoi',
-          content: ''
-        },
-        {
-          id: '35Pmx3R4I6YTvJqhFHnxyI',
-          title: 'NGỢI KHEN THIÊN CHÚA VÌ THÁNH CẢ GIUSE',
-          thumbnailUrl: 'https://images.ctfassets.net/cc0hz5irnide/9t4jDQQwt1his5LRMkDQV/0dcc58542989e4e2b861b403f607b75f/000107506.jpg',
-          author: 'Khoi Hoang',
-          date: new Date('2021-11-14T00:00:00.000Z'),
-          brief: 'Hoang Khoi Hoang Khoi',
-          content: ''
-        }
-      ]
-
-      expect(articles).toEqual(expected)
-    })
-
-    it('should return the latest entries filtered by tags', async () => {
+  describe('latestEntriesByTags', () => {
+    it('should return the correct entries given some tags', async () => {
       const articles = await underTest.latestEntriesByTags(10, Locale.VIETNAMESE, [Tag.PRAYER, Tag.YOUTH])
       const expectedArticles = [
         {
@@ -47,7 +21,8 @@ describe('ApolloArticleRepository', () => {
           author: 'Khoi Hoang',
           date: new Date('2021-11-15T00:00:00.000Z'),
           brief: 'Hoang Khoi Hoang Khoi',
-          content: ''
+          content: '',
+          tags: ['prayer', 'youth']
         },
         {
           id: '35Pmx3R4I6YTvJqhFHnxyI',
@@ -56,11 +31,12 @@ describe('ApolloArticleRepository', () => {
           author: 'Khoi Hoang',
           date: new Date('2021-11-14T00:00:00.000Z'),
           brief: 'Hoang Khoi Hoang Khoi',
-          content: ''
+          content: '',
+          tags: ['prayer']
         }
       ]
 
-      expect(articles).toEqual(expectedArticles)
+      expect(articles).toEqual(expectedArticles);
     })
   })
 
@@ -69,6 +45,7 @@ describe('ApolloArticleRepository', () => {
       const actualArticle = await underTest.entry('71q349dybS5v2Y9ANIREb6', Locale.VIETNAMESE)
       const expectedArticle = {
         id: '71q349dybS5v2Y9ANIREb6',
+        tags: [Tag.PRAYER, Tag.YOUTH],
         title: 'NGỢI KHEN THIÊN CHÚA VÌ THÁNH CẢ GIUSE (Latest)',
         thumbnailUrl: 'https://images.ctfassets.net/cc0hz5irnide/9t4jDQQwt1his5LRMkDQV/0dcc58542989e4e2b861b403f607b75f/000107506.jpg',
         author: 'Khoi Hoang',

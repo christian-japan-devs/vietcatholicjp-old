@@ -5,7 +5,6 @@ import fetch from 'cross-fetch'
 import { setContext } from '@apollo/client/link/context'
 import { ApolloArticleRepository } from './domain/repository/ArticleRepository'
 import { ApolloDailyReadingRepository } from './domain/repository/DailyReadingRepository'
-import { ApolloPastoralLetterRepository } from './domain/repository/PastoralLetterRepository'
 import { SimplePropertiesImpl } from './domain/config/Properties'
 import { EnvVarProfile } from './domain/config/AppProfile'
 
@@ -31,5 +30,4 @@ export const initInjector = () => {
   container.register('AppProfile', {useClass: EnvVarProfile})
   container.register('ArticleRepository', {useClass: ApolloArticleRepository})
   container.register('DailyReadingRepository', {useClass: ApolloDailyReadingRepository})
-  container.register('PastoralLetterRepository', {useClass: ApolloPastoralLetterRepository})
 }

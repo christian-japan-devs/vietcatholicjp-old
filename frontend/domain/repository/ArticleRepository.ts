@@ -8,11 +8,6 @@ import { Tag } from '../models/Tag'
 
 export interface ArticleRepository {
   /**
-   * Get the latest entries, only title, thumbnailUrl, date and author and brief are populated.
-   */
-  latestEntries (count: number, locale: Locale): Promise<Article[]>
-
-  /**
    * Get the latest entries, filters by tags.
    * Implementation note: for multiple tags, the fetching policy MUST be OR not AND.
    */
@@ -32,15 +27,20 @@ export class ApolloArticleRepository implements ArticleRepository {
     fragment articleBriefArticle on Article {
      sys {
         id
-      },
+      }
+      contentfulMetadata {
+        tags {
+          id
+        }
+      }
       thumbnail {
-        url,
+        url
         description
-      },
-      title,
-      date,
-      author,
-      brief,
+      }
+      title
+      date
+      author
+      brief
     }
   `
 
@@ -91,28 +91,6 @@ export class ApolloArticleRepository implements ArticleRepository {
     return article === null ? null : ApolloArticleRepository.makeArticle(article)
   }
 
-  async latestEntries (count: number, locale: Locale): Promise<Article[]> {
-    const entryItems = (await this.apolloClient.query({
-      query: gql`
-        ${ ApolloArticleRepository.FRAGMENT_BRIEF_ARTICLE }
-        query latestArticles($limit: Int, $preview: Boolean, $locale: String) {
-          articleCollection(limit: $limit, preview: $preview, locale: $locale, order: date_DESC) {
-            items {
-              ...articleBriefArticle
-            }
-          }
-        }
-      `,
-      variables: {
-        "limit": count,
-        "preview": !this.appProfile.isProduction(),
-        "locale": locale,
-      }
-    })).data.articleCollection.items
-
-    return entryItems.map(ApolloArticleRepository.makeArticle)
-  }
-
   async latestEntriesByTags (count: number, locale: Locale, tags: Tag[]): Promise<Article[]> {
     const entryItems = (await this.apolloClient.query({
       query: gql`
@@ -146,7 +124,8 @@ export class ApolloArticleRepository implements ArticleRepository {
       author: articleItem.author,
       date: new Date(articleItem.date),
       brief: articleItem.brief,
-      content: articleItem.content ? render(articleItem.content) : ''
+      content: articleItem.content ? render(articleItem.content) : '',
+      tags: articleItem.contentfulMetadata.tags.map((tag: any) => tag.id)
     } as Article
   }
 }
