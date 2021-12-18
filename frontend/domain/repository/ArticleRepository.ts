@@ -3,13 +3,13 @@ import { ApolloClient, gql } from '@apollo/client'
 import { Locale } from '../models/Locale'
 import { inject, singleton } from 'tsyringe'
 import { AppProfile } from '../config/AppProfile'
-import { render } from '../util/RichTextHtmlRenderer'
+import { CONTENT_SCHEMA, render } from '../util/RichTextHtmlRenderer'
 import { Tag } from '../models/Tag'
 
 export interface ArticleRepository {
   /**
    * Get the latest entries, filters by tags.
-   * Implementation note: for multiple tags, the fetching policy MUST be OR not AND.
+   * Implementation note: for multiple tags, the fetching policy MUST be OR, not AND.
    */
   latestEntriesByTags (count: number, locale: Locale, tags: Tag[]): Promise<Article[]>
 
@@ -58,26 +58,11 @@ export class ApolloArticleRepository implements ArticleRepository {
   async entry (id: string, locale: Locale): Promise<Article | null> {
     const article = (await this.apolloClient.query({
       query: gql`
-        ${ApolloArticleRepository.FRAGMENT_BRIEF_ARTICLE}
+        ${ ApolloArticleRepository.FRAGMENT_BRIEF_ARTICLE }
         query article($id: String!, $preview: Boolean, $locale: String) {
           article(id: $id, preview: $preview, locale: $locale) {
            ...articleBriefArticle,
-            content {
-              json,
-              links {
-                assets {
-                  block {
-                    sys {
-                      id
-                    },
-                    contentType,
-                    url
-                    title,
-                    description,
-                  }
-                }
-              }
-            }
+            ${ CONTENT_SCHEMA }
           }
         }
       `,

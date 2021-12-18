@@ -3,25 +3,29 @@ import { BLOCKS } from '@contentful/rich-text-types'
 import { Asset } from '../models/Asset'
 import { escape } from 'html-escaper';
 
+
+
 /*
-richText object must have these fields.
-{
-  json,
-  links {
-    assets {
-      block {
-        sys {
-          id
-        },
-        contentType,
-        url
-        title,
-        description,
+ * richText object must have these fields.
+ */
+export const CONTENT_SCHEMA =
+  `content {
+    json,
+    links {
+      assets {
+        block {
+          sys {
+            id
+          },
+          contentType,
+          url
+          title,
+          description,
+        }
       }
     }
-  }
-}
- */
+  }`
+
 export const render = (richText: any): string => {
   // Map the assets
   let assetMap = new Map<string, Asset>()
